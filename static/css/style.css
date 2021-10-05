@@ -1,0 +1,13 @@
+#container {
+    width: 800px;
+    height: 608px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
+.tile {
+    width: 16px;
+    height: 16px;
+    background-color: blueviolet;
+}

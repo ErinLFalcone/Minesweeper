@@ -50,7 +50,7 @@ class Map(db.Model):
     __tablename__ = 'maps'
 
     map_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    character_id = db.Column(db.Integer, db.ForeignKey("char_data.char_id"))
+    char_id = db.Column(db.Integer, db.ForeignKey("char_data.char_id"))
     map_type = db.Column(db.String(8), nullable=False)
 
     def __repr__(self):
