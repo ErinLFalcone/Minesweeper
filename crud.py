@@ -20,16 +20,6 @@ def create_char(user_id):
 
     return new_char
 
-def create_tile(x_cord, y_cord, map_id, is_mutable=True):
-    """Create and return a new tile."""
-
-    new_tile = Tile(x_cord=x_cord, y_cord=y_cord, map_id=map_id, is_mutable=is_mutable)
-
-    db.session.add(new_tile)
-    db.session.commit()
-
-    return new_tile
-
 def create_map(char_id, map_type):
     """Create and return a new map."""
 
@@ -40,6 +30,16 @@ def create_map(char_id, map_type):
 
     return new_map
 
+def create_tile(x_cord, y_cord, map_id, is_mutable=True):
+    """Create and return a new tile."""
+
+    new_tile = Tile(x_cord=x_cord, y_cord=y_cord, map_id=map_id, is_mutable=is_mutable)
+
+    db.session.add(new_tile)
+    db.session.commit()
+
+    return new_tile
+
 def create_cont(is_walkable, content_info):
     """Create and return a new map."""
 
@@ -49,6 +49,12 @@ def create_cont(is_walkable, content_info):
     db.session.commit()
 
     return new_cont
+
+def read_user(username):
+
+    user = User.query.filter(User.user_name == username).first()
+
+    return user
 
 
 def move_char(char_id, target_tile):
