@@ -19,6 +19,9 @@
             <input type="submit">
         </form>
     </div>
+      {% for message in get_flashed_messages() %}
+        <li>{{ message }}</li>
+      {% endfor %}
   </div>
   <script src="/static/js/pagejs.jsx" type="text/jsx"></script>
 </body>

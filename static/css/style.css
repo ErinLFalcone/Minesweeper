@@ -1,13 +1,22 @@
 #container {
-    width: 800px;
-    height: 608px;
+    width: 960px;
+    height: 640px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 100px;
 }
 
 .tile {
-    width: 16px;
-    height: 16px;
+    font-size: 0px;
+    width: 32px;
+    height: 32px;
     background-color: blueviolet;
+    display: inline-block;
+    margin-top: -4px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-top: 0px;
+    border-bottom: 0px;
+    
 }
