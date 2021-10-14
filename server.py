@@ -36,6 +36,11 @@ def login():
         Please try again''')
         return redirect('/')
 
+@app.route('tile_data')
+def get_tile_data:
+
+    pass
+
 if __name__ == "__main__":
     connect_to_db(app)
     # DebugToolbarExtension(app)

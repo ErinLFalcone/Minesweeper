@@ -56,6 +56,11 @@ def read_user(username):
 
     return user
 
+def read_tile(tile_x, tile_y, map=1):
+
+    tile = Tile.query.filter(Tile.x_cord == tile_x, Tile.y_cord == tile_y).first()
+
+    return tile
 
 def move_char(char_id, target_tile):
     """Update character position to a new tile, return new tile."""

@@ -2,23 +2,25 @@
 
 // 30x20
 
-const pageArray = [];
+const Tiles = props => {
+    const [tileId, setTileId] = React.useState([10,10])
+    const tileArray = [];
+    for (let iy = 1; iy<=20; iy+=1 ) {
+        for (let ix = 1; ix<=30; ix+=1 ) {
+            let xy = ([ix,iy])
+            tileArray.push(xy);
+    }
+    }
 
-for (let iy = 1; iy<=20; iy+=1 ) {
-    for (let ix = 1; ix<=30; ix+=1 ) {
-        let xy = (`[${ix},${iy}]`)
-        pageArray.push(xy);
+    console.log(tileArray)
+
+    const tileDivs = tileArray.map((tileNum) =>
+    <img className="tile" key={`[${tileNum[0]},${tileNum[1]}]`} id={`[${tileNum[0]},${tileNum[1]}]`} src="static/img/testbox.jpg"></img>
+    )
+
+    return <section className="map">{tileDivs}</section>
+
 }
-}
 
-const tileArray = pageArray.map((tileNum) => 
-    <div className="tile" id={tileNum}></div>
-)
 
-ReactDOM.render(tileArray, document.querySelector('#container'))
-
-// function SingleTile(props) {
-//     return <div className="tile" id={props.id}></div>;
-
-// }
-
+ReactDOM.render(<Tiles/>, document.querySelector('#container'))
