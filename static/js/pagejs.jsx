@@ -12,7 +12,7 @@ const Tiles = props => {
     }
     }
 
-    console.log(tileArray)
+    
 
     const tileDivs = tileArray.map((tileNum) =>
     <img className="tile" key={`[${tileNum[0]},${tileNum[1]}]`} id={`[${tileNum[0]},${tileNum[1]}]`} src="static/img/testbox.jpg"></img>

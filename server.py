@@ -36,10 +36,16 @@ def login():
         Please try again''')
         return redirect('/')
 
-@app.route('tile_data')
-def get_tile_data:
+# @app.route('/tile_data')
+# def get_tile_data:
 
-    pass
+#     pass
+    
+#     tile_data = request.args.get("tile")
+
+
+
+#     pass
 
 if __name__ == "__main__":
     connect_to_db(app)

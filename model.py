@@ -16,7 +16,9 @@ class User(db.Model):
     password = db.Column(db.String(32), nullable=False)
 
     def __repr__(self):
-        return f"<User user_id={self.user_id}, user_email=({self.user_email}), user_name={self.user_name}>"
+        return f"""<User user_id={self.user_id}, 
+        user_email=({self.user_email}), 
+        user_name={self.user_name}>"""
 
 class Char(db.Model):
 
@@ -28,7 +30,11 @@ class Char(db.Model):
     char_stuff = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):
-        return f"<Char char_id={self.char_id}, user_id=({self.user_id}), (x_cord, y_cord)=({self.x_cord}, ({self.y_cord}), map_id={self.map_id}>"
+        return f"""<Char
+        char_id={self.char_id},
+        user_id=({self.user_id}),
+        (x_cord, y_cord)=({self.x_cord}, ({self.y_cord}),
+        map_id={self.map_id}>"""
 
 class Tile(db.Model):
     '''Class for each map tile, with x-coordinate, y-coordinate, map ID, tile contents, and muability'''
@@ -38,11 +44,18 @@ class Tile(db.Model):
     x_cord = db.Column(db.Integer, nullable=False)
     y_cord = db.Column(db.Integer, nullable=False)
     map_id = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
-    tile_content_id = db.Column(db.Integer, db.ForeignKey("tile_cont.tile_cont_id"))
+    tile_cont_id = db.Column(db.Integer, db.ForeignKey("tile_cont.tile_cont_id"))
     is_mutable = db.Column(db.Boolean, nullable=False)
 
+    cont = db.relationship('Cont', back_populates='tile')
+
     def __repr__(self):
-        return f"<Tile tile_id={self.tile_id}, (x_cord, y_cord)=({self.x_cord}, ({self.y_cord}), map_id={self.map_id}>"
+        return (
+            f"""<Tile
+            tile_id={self.tile_id}, 
+            (x_cord, y_cord)=({self.x_cord}, ({self.y_cord}),
+            map_id={self.map_id}>"""
+            )
 
 
 class Map(db.Model):
@@ -54,7 +67,10 @@ class Map(db.Model):
     map_type = db.Column(db.String(8), nullable=False)
 
     def __repr__(self):
-        return f"<Map map_id={self.map_id}, char_id={self.char_id}, map_type={self.map_type}>"
+        return f"""<Map
+        map_id={self.map_id},
+        char_id={self.char_id},
+        map_type={self.map_type}>"""
 
 class Cont(db.Model):
 
@@ -62,10 +78,15 @@ class Cont(db.Model):
 
     tile_cont_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     is_walkable = db.Column(db.Boolean, nullable=False)
-    content_info = db.Column(db.String, nullable=True)
+    cont_img = db.Column(db.String)
+    cont_info = db.Column(db.String, nullable=True)
+
+    tile = db.relationship('Tile', back_populates='cont')
 
     def __repr__(self):
-        return f"<Cont tile_cont_id={self.tile_cont_id}, is_walkable={self.is_walkable}>"
+        return f"""<Cont
+        tile_cont_id={self.tile_cont_id},
+        is_walkable={self.is_walkable}>"""
 
 
 def connect_to_db(app):
