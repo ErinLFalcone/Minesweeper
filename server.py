@@ -4,7 +4,7 @@ from flask import (
     Flask, render_template, request, session, redirect, flash
     )
 from model import connect_to_db
-import crud
+import crud 
 
 app = Flask(__name__)
 app.secret_key = "A mystery!"  # needed for flash and session to work
@@ -36,16 +36,16 @@ def login():
         Please try again''')
         return redirect('/')
 
-# @app.route('/tile_data')
-# def get_tile_data:
+@app.route('/tile_data')
+def get_tile_img():
+    # import pdb; pdb.set_trace()
+  
+    tile_x = int(request.args.get("tile_x"))
+    tile_y = int(request.args.get("tile_y"))
 
-#     pass
-    
-#     tile_data = request.args.get("tile")
+    tile = crud.read_tile(tile_x, tile_y)
 
-
-
-#     pass
+    return tile.cont.cont_img
 
 if __name__ == "__main__":
     connect_to_db(app)
