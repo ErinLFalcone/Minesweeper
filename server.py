@@ -13,6 +13,7 @@ app.secret_key = "A mystery!"  # needed for flash and session to work
 # Replace this with routes and view functions!
 @app.route('/')
 def show_index():
+
     return render_template('login.html')
 
 @app.route('/login', methods=["POST"])
@@ -39,13 +40,19 @@ def login():
 @app.route('/tile_data')
 def get_tile_img():
     # import pdb; pdb.set_trace()
-  
+ 
     tile_x = int(request.args.get("tile_x"))
     tile_y = int(request.args.get("tile_y"))
 
     tile = crud.read_tile(tile_x, tile_y)
 
-    return tile.cont.cont_img
+    if tile.is_mine == True:
+        flash('''Sorry, you lose!\n
+            Please try again.''')
+        return redirect('/')
+    else:
+        return tile.mine_count
+
 
 if __name__ == "__main__":
     connect_to_db(app)
