@@ -15,10 +15,9 @@ crud.create_user('test@test.test', 'Test', '7357')
 
 x_cord = 0
 
-while x_cord < 30:
+while x_cord <= 29:
     y_cord = 0
-    while y_cord < 20:
+    while y_cord <= 19:
         crud.create_tile(x_cord, y_cord)
         y_cord +=1
     x_cord +=1
-    

@@ -13,6 +13,7 @@ app.secret_key = "A mystery!"  # needed for flash and session to work
 # Replace this with routes and view functions!
 @app.route('/')
 def show_index():
+    crud.fill_new_game()
 
     return render_template('login.html')
 
@@ -45,13 +46,15 @@ def get_tile_img():
     tile_y = int(request.args.get("tile_y"))
 
     tile = crud.read_tile(tile_x, tile_y)
-
+    print(f"tile={tile}")
+    print(tile.is_mine)
     if tile.is_mine == True:
+        
         flash('''Sorry, you lose!\n
             Please try again.''')
-        return redirect('/')
-    else:
-        return tile.mine_count
+        return "Loser"
+    
+    return str(tile.mine_count)
 
 
 if __name__ == "__main__":

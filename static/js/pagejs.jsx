@@ -2,47 +2,75 @@
 
 // 30x20
 
+// [[0, [0,1,2,3,4]], [1,[0,1,2,3,4]], [2,[0,1,2,3,4]]]
+
+const tileArray = [];
+for (let iy = 0; iy<=19; iy+=1) {
+    tileArray.push([iy])
+    for (let ix = 0; ix<=29; ix+=1 ) {
+        if (ix === 0) {
+            tileArray[iy].push([ix])
+        };
+        if (ix !== 0) {
+            tileArray[iy][1].push(ix)
+        };
+        };
+}
+
+
+
+
 const Tiles = props => {
-    const [tileId, setTileId] = React.useState([0,0]);
-    const tileArray = [];
-    for (let iy = 1; iy<=20; iy+=1 ) {
-        for (let ix = 1; ix<=30; ix+=1 ) {
-            let xy = ([ix,iy])
-            tileArray.push(xy);
-    }
-    }
-    const getTile  = currTile => {
-            console.log(currTile)
+
+    const getTile  = cords => {
+            console.log(cords)
+            console.log(cords[0])
             const tileData = {
-                tile_x: currTile[0],
-                tile_y: currTile[1]
+                tile_x: cords[0],
+                tile_y: cords[1]
             };
             $.get('/tile_data', tileData, res => {
                 console.log(res)
+                $(`#-${cords[0]}-${cords[1]}-`).text(res)
                 return res
             });
     } 
 
-
-    const tileImgs = []
-    for (const currTile of tileArray) {
-        // setTileId(currTile);
-        
-        tileImgs.push(
-            <img className="tile" 
-             key={`[${currTile[0]},${currTile[1]}]`} 
-             id={`[${currTile[0]},${currTile[1]}]`} 
-             src='static/img/testbox.jpg'
-             onClick={() => getTile(currTile)}></img> 
+    const tileBttns = []
+    for (const currTile of tileArray[0][1]) {
+        tileBttns.push(
+            <div
+             className="tile" 
+             key={`-${currTile}-${props.row}-`} 
+             id={`-${currTile}-${props.row}-`} 
+             onClick={() => getTile([currTile,props.row])}></div> 
         )
-        // setTileId([0,0]);
     }
 
 
-    return <section className="map">{tileImgs}</section>
+    return <section className="row">{tileBttns}</section>
 
-}   
+}
 
-ReactDOM.render(<Tiles/>, document.querySelector('#container'))
+const Rows = props => {
+
+    const rowArray = []
+
+    for (const currRow of tileArray) {
+        rowArray.push(
+            <div
+            className='row'
+            key={`row-${currRow[0]}`}
+            id={`row-${currRow[0]}`}
+            >
+            <Tiles row={currRow[0]}/>
+            </div>
+        )
+    }
+    return <section className="map">{rowArray}</section>
+
+}
+
+ReactDOM.render(<Rows/>, document.querySelector('#container'))
 
 
