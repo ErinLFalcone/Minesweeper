@@ -88,16 +88,17 @@ def fill_z_tile_dict(z_mine_obj):
 
     tile_obj_dict = {z_mine_obj : 0}
     update_dict = {}
+    checked_set = set([])
 
     while True:
         update_dict.update(tile_obj_dict)
-        print(update_dict is tile_obj_dict)
         for tile in tile_obj_dict:
-            if tile_obj_dict[tile] == 0:
+            if (tile_obj_dict[tile] == 0) and (tile not in checked_set):
+                checked_set.add(tile)
                 update_dict.update(
                     adj_z_mine_add(update_dict, tile)
                     )
-      
+
         if len(tile_obj_dict) == len(update_dict):
             break
         else:
