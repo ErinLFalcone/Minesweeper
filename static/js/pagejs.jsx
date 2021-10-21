@@ -39,11 +39,12 @@ const Tiles = props => {
     const tileBttns = []
     for (const currTile of tileArray[0][1]) {
         tileBttns.push(
-            <div
+            <button
+             type="button"
              className="tile" 
              key={`-${currTile}-${props.row}-`} 
              id={`-${currTile}-${props.row}-`} 
-             onClick={() => getTile([currTile,props.row])}></div> 
+             onClick={() => getTile([currTile,props.row])}></button> 
         )
     }
 

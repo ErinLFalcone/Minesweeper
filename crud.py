@@ -57,21 +57,74 @@ def adj_mine_setter(num_tile, mine_list):
             db.session.commit()
 
 
+def adj_z_mine_add(tile_obj_dict, z_mine_obj):
+
+    update_dict = tile_obj_dict
+    z_mine_obj = z_mine_obj
+
+    # Add all adjacent tiles to dictionary
+    zm_x = z_mine_obj.x_cord
+    zm_y = z_mine_obj.y_cord
+    adj_x_cord = zm_x-1
+
+    while adj_x_cord <= zm_x+1:
+        adj_y_cord = zm_y-1
+        while adj_y_cord <= zm_y+1:
+            adj_tile = Tile.query.filter_by(
+                x_cord=adj_x_cord, y_cord=adj_y_cord
+                ).first()
+            if (
+                adj_tile not in tile_obj_dict
+                ) and (
+                    adj_tile is not None
+                    ):
+                update_dict[adj_tile] = adj_tile.mine_count
+            adj_y_cord +=1
+        adj_x_cord +=1
+    
+    return update_dict
+
+def fill_z_tile_dict(z_mine_obj):
+
+    tile_obj_dict = {z_mine_obj : 0}
+    update_dict = {}
+
+    while True:
+        update_dict.update(tile_obj_dict)
+        print(update_dict is tile_obj_dict)
+        for tile in tile_obj_dict:
+            if tile_obj_dict[tile] == 0:
+                update_dict.update(
+                    adj_z_mine_add(update_dict, tile)
+                    )
+      
+        if len(tile_obj_dict) == len(update_dict):
+            break
+        else:
+            tile_obj_dict.update(update_dict)
+
+
+    return tile_obj_dict
+
 def fill_new_game(num_mine=20):
 
     last_tile = Tile.query.order_by(Tile.tile_id.desc()).first()
 
     num_tile = last_tile.tile_id
 
-    mine_list = r.sample(range(1,num_tile+1), num_mine)
+    mine_list = r.sample(range(num_tile+1), num_mine)
 
-    # mine_list = [1,22]
+    # remove old mines
+    curr_mines = Tile.query.filter_by(is_mine=True).all()
+    for mine in curr_mines:
+        setattr(mine, 'is_mine', False)
+        db.session.commit()
 
     for mine in mine_list:
         mine_tile = Tile.query.filter_by(tile_id=mine).first()
         setattr(mine_tile, 'is_mine', True)
         db.session.commit()
-            
+
     adj_mine_setter(num_tile, mine_list)
 
     return mine_list

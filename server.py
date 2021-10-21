@@ -47,12 +47,13 @@ def get_tile_img():
 
     tile = crud.read_tile(tile_x, tile_y)
     print(f"tile={tile}")
-    print(tile.is_mine)
-    if tile.is_mine == True:
+    
+    
+    if tile.is_mine:
         
         flash('''Sorry, you lose!\n
             Please try again.''')
-        return "Loser"
+        return "F"
     
     return str(tile.mine_count)
 
