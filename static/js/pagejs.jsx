@@ -18,8 +18,6 @@ for (let iy = 0; iy<=19; iy+=1) {
 }
 
 
-
-
 const Tiles = props => {
 
     const getTile  = cords => {
@@ -31,8 +29,10 @@ const Tiles = props => {
             };
             $.get('/tile_data', tileData, res => {
                 console.log(res)
-                $(`#-${cords[0]}-${cords[1]}-`).text(res)
-                return res
+                for (const tile of res) {
+                    $(`#-${tile[0]}-${tile[1]}-`).text(tile[2])
+                }
+                
             });
     } 
 
@@ -44,7 +44,7 @@ const Tiles = props => {
              className="tile" 
              key={`-${currTile}-${props.row}-`} 
              id={`-${currTile}-${props.row}-`} 
-             onClick={() => getTile([currTile,props.row])}></button> 
+             onClick={() => getTile([currTile,props.row])}> </button> 
         )
     }
 

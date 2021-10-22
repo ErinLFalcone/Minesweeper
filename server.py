@@ -1,16 +1,15 @@
 """Server for farm game!"""
 
 from flask import (
-    Flask, render_template, request, session, redirect, flash
+    Flask, render_template, request, session, redirect, flash, jsonify
     )
 from model import connect_to_db
-import crud 
+import crud
 
 app = Flask(__name__)
 app.secret_key = "A mystery!"  # needed for flash and session to work
 
 
-# Replace this with routes and view functions!
 @app.route('/')
 def show_index():
     crud.fill_new_game()
@@ -54,9 +53,23 @@ def get_tile_img():
         flash('''Sorry, you lose!\n
             Please try again.''')
         return "F"
-    
-    return str(tile.mine_count)
 
+    elif tile.mine_count > 0:
+        return jsonify([[tile.x_cord, tile.y_cord, tile.mine_count]])
+
+    elif tile.mine_count == 0:
+        tile_dict = crud.fill_z_tile_dict(tile)
+
+        js_tile_array = []
+         
+        for obj, num_mine in tile_dict.items():
+            new_list = [obj.x_cord, obj.y_cord, num_mine]
+            js_tile_array.append(new_list)
+
+            
+        print(jsonify(js_tile_array))
+
+        return jsonify(js_tile_array)
 
 if __name__ == "__main__":
     connect_to_db(app)
