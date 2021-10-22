@@ -52,7 +52,7 @@ def get_tile_img():
         
         flash('''Sorry, you lose!\n
             Please try again.''')
-        return "F"
+        return jsonify([[tile.x_cord, tile.y_cord, 'F']])
 
     elif tile.mine_count > 0:
         return jsonify([[tile.x_cord, tile.y_cord, tile.mine_count]])
