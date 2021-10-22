@@ -146,3 +146,9 @@ def read_tile(tile_x, tile_y):
         ).first()
 
     return tile
+
+def read_all_mines():
+
+    all_mines = Tile.query.filter(Tile.is_mine == True).all()
+
+    return all_mines

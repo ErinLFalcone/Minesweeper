@@ -38,7 +38,7 @@ def login():
         return redirect('/')
 
 @app.route('/tile_data')
-def get_tile_img():
+def get_tile_data():
     # import pdb; pdb.set_trace()
  
     tile_x = int(request.args.get("tile_x"))
@@ -52,7 +52,7 @@ def get_tile_img():
         
         flash('''Sorry, you lose!\n
             Please try again.''')
-        return jsonify([[tile.x_cord, tile.y_cord, 'F']])
+        return jsonify([[tile.x_cord, tile.y_cord, 'M']])
 
     elif tile.mine_count > 0:
         return jsonify([[tile.x_cord, tile.y_cord, tile.mine_count]])
@@ -70,6 +70,14 @@ def get_tile_img():
         print(jsonify(js_tile_array))
 
         return jsonify(js_tile_array)
+
+@app.route('/flag_data')
+def get_flag_data():
+
+
+    crud.read_all_mines()
+
+    return jsonify([1,1])
 
 if __name__ == "__main__":
     connect_to_db(app)

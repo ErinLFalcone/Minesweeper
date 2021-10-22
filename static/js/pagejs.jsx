@@ -25,11 +25,46 @@ const Tiles = props => {
             };
             $.get('/tile_data', tileData, res => {
                 for (const tile of res) {
-                    $(`#-${tile[0]}-${tile[1]}-`).text(tile[2])
-                }
-                
+                    $(`#${tile[0]}-${tile[1]}`).text(tile[2])
+                }  
             });
     } 
+
+    const getFlag = cords => {
+        $(`#${cords[0]}-${cords[1]}`).text("F");
+        
+        const flagTiles = $(".tile:contains('F')");
+        
+        const flagIds = []
+
+        for (const tile of flagTiles) {
+            flagIds.push([tile.id])
+        }  
+        
+        const tileData = {
+            flags: flagIds
+        };
+
+        console.log(tileData)
+
+        $.get('/flag_data', tileData, res => {
+            console.log(res)
+            const allMines = [res];
+            if (allMines === [1,1]) {
+                console.log("This works!")
+            } else {
+                console.log(`allMines = ${allMines}`)
+            }
+        })
+    }
+
+    const toggClick = cords => {
+        if (props.toggleState) {
+            getFlag(cords)
+        } else {
+            getTile(cords)
+        };
+    };
 
     const tileBttns = []
     for (const currTile of tileArray[0][1]) {
@@ -37,9 +72,9 @@ const Tiles = props => {
             <button
              type="button"
              className="tile" 
-             key={`-${currTile}-${props.row}-`} 
-             id={`-${currTile}-${props.row}-`} 
-             onClick={() => getTile([currTile,props.row])}>⠀</button> 
+             key={`${currTile}-${props.row}`} 
+             id={`${currTile}-${props.row}`} 
+             onClick={() => toggClick([currTile,props.row])}>⠀</button> 
         )
     }
 
@@ -59,7 +94,7 @@ const Rows = props => {
             key={`row-${currRow[0]}`}
             id={`row-${currRow[0]}`}
             >
-            <Tiles row={currRow[0]}/>
+            <Tiles row={currRow[0]} toggleState={props.toggleState}/>
             </div>
         )
     }
@@ -73,6 +108,7 @@ const ToggleButton = props => {
         <button
                 type="button"
                 className="flagToggle"
+                key="flagToggle"
                 id="flagToggle"
                 onClick={() => props.toggler()}
                 >
@@ -101,7 +137,7 @@ const Minesweeper = props => {
             </div>
             <div
             id="container">
-                <Rows/>
+                <Rows toggleState={toggleState}/>
             </div>
         </div>
     )
