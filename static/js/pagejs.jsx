@@ -44,7 +44,7 @@ const Tiles = props => {
              className="tile" 
              key={`-${currTile}-${props.row}-`} 
              id={`-${currTile}-${props.row}-`} 
-             onClick={() => getTile([currTile,props.row])}> </button> 
+             onClick={() => getTile([currTile,props.row])}>⠀</button> 
         )
     }
 

@@ -114,7 +114,6 @@ def fill_new_game(num_mine=60):
     num_tile = last_tile.tile_id
 
     mine_list = r.sample(range(1,num_tile), num_mine)
-    print(range(1,num_tile))
 
     # remove old mines
     curr_mines = Tile.query.filter_by(is_mine=True).all()
