@@ -2,8 +2,6 @@
 
 // 30x20
 
-// [[0, [0,1,2,3,4]], [1,[0,1,2,3,4]], [2,[0,1,2,3,4]]]
-
 const tileArray = [];
 for (let iy = 0; iy<=19; iy+=1) {
     tileArray.push([iy])
@@ -21,14 +19,11 @@ for (let iy = 0; iy<=19; iy+=1) {
 const Tiles = props => {
 
     const getTile  = cords => {
-            console.log(cords)
-            console.log(cords[0])
             const tileData = {
                 tile_x: cords[0],
                 tile_y: cords[1]
             };
             $.get('/tile_data', tileData, res => {
-                console.log(res)
                 for (const tile of res) {
                     $(`#-${tile[0]}-${tile[1]}-`).text(tile[2])
                 }
@@ -72,6 +67,47 @@ const Rows = props => {
 
 }
 
-ReactDOM.render(<Rows/>, document.querySelector('#container'))
+const ToggleButton = props => {
+
+    const theToggler = [
+        <button
+                type="button"
+                className="flagToggle"
+                id="flagToggle"
+                onClick={() => props.toggler()}
+                >
+                Place Flag Toggle</button>
+    ]
+
+
+    return <section id="toggSec">{theToggler}</section>
+}
+
+const Minesweeper = props => {
+
+    const [toggleState, setToggleState] = React.useState(false);
+
+    const toggler = () => {
+        setToggleState(!toggleState)
+        console.log(toggleState)
+    };
+
+    return (
+        <div
+        id="minesweeper">
+            <div
+            id="toggleDiv">
+                <ToggleButton toggleState={toggleState} toggler={toggler}/>
+            </div>
+            <div
+            id="container">
+                <Rows/>
+            </div>
+        </div>
+    )
+
+}
+
+ReactDOM.render(<Minesweeper/>, document.querySelector('#base'))
 
 
