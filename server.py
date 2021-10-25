@@ -45,8 +45,6 @@ def get_tile_data():
     tile_y = int(request.args.get("tile_y"))
 
     tile = crud.read_tile(tile_x, tile_y)
-    print(f"tile={tile}")
-    
     
     if tile.is_mine:
         
@@ -74,10 +72,18 @@ def get_tile_data():
 @app.route('/flag_data')
 def get_flag_data():
 
+    all_mines = []
 
-    crud.read_all_mines()
+    for mine in crud.read_all_mines():
+        mine_cords = [
+            mine.x_cord,
+            mine.y_cord
+        ]
+        all_mines.append(mine_cords)
 
-    return jsonify([1,1])
+    print(all_mines)
+
+    return jsonify(all_mines)
 
 if __name__ == "__main__":
     connect_to_db(app)

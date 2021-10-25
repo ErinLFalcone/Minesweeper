@@ -15,7 +15,6 @@ for (let iy = 0; iy<=19; iy+=1) {
         };
 }
 
-
 const Tiles = props => {
 
     const getTile  = cords => {
@@ -38,24 +37,29 @@ const Tiles = props => {
         const flagIds = []
 
         for (const tile of flagTiles) {
-            flagIds.push([tile.id])
+            
+            let tileCords = tile.id.split("-")
+            for (const i in tileCords) {
+                tileCords[i] = parseInt(tileCords[i])
+            }
+            flagIds.push(tileCords)
         }  
-        
-        const tileData = {
-            flags: flagIds
-        };
 
-        console.log(tileData)
+        console.log(flagIds)
 
-        $.get('/flag_data', tileData, res => {
+        $.get('/flag_data', res => {
             console.log(res)
-            const allMines = [res];
-            if (allMines === [1,1]) {
+            
+            const allMines = JSON.stringify(res.sort());
+            const allFlags = JSON.stringify(flagIds.sort());
+            
+            if (allMines == allFlags) {
                 console.log("This works!")
             } else {
-                console.log(`allMines = ${allMines}`)
-            }
-        })
+                console.log("allMines = ", allFlags)
+                console.log("allMines = ", allMines)
+            };
+        });
     }
 
     const toggClick = cords => {
@@ -77,7 +81,6 @@ const Tiles = props => {
              onClick={() => toggClick([currTile,props.row])}>⠀</button> 
         )
     }
-
 
     return <section className="row">{tileBttns}</section>
 
@@ -145,5 +148,3 @@ const Minesweeper = props => {
 }
 
 ReactDOM.render(<Minesweeper/>, document.querySelector('#base'))
-
-
