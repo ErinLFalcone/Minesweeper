@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title></title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
-  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+{% extends 'base.html' %}
 
-  <link href="/static/css/style.css" rel="stylesheet">
-</head>
-<body>
+{% block title %} Login {% endblock %}
+
+{% block body %}
   <div id="container">
     <div className="login">
         <form action="/login" method="POST">
@@ -24,6 +17,4 @@
         <li>{{ message }}</li>
       {% endfor %}
   </div>
-  <script src="/static/js/pagejs.jsx" type="text/jsx"></script>
-</body>
-</html>
+  {% endblock %}

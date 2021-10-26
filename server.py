@@ -12,9 +12,13 @@ app.secret_key = "A mystery!"  # needed for flash and session to work
 
 @app.route('/')
 def show_index():
-    crud.fill_new_game()
 
-    return render_template('login.html')
+    try:
+        if session['logged'] == True:
+            crud.fill_new_game()
+        return render_template('game.html')
+    except KeyError:
+            return render_template('login.html')
 
 @app.route('/login', methods=["POST"])
 def login():
@@ -26,8 +30,9 @@ def login():
 
     try:
         if password == user.password:
+            session['logged'] = True
             session['username'] = username
-            return render_template('base.html')
+            return redirect('/')
         else:
             flash('''Username or password incorrect.\n
             Please try again''')
@@ -45,9 +50,9 @@ def get_tile_data():
     tile_y = int(request.args.get("tile_y"))
 
     tile = crud.read_tile(tile_x, tile_y)
-    
+   
     if tile.is_mine:
-        
+       
         flash('''Sorry, you lose!\n
             Please try again.''')
         return jsonify([[tile.x_cord, tile.y_cord, 'M']])
@@ -63,9 +68,6 @@ def get_tile_data():
         for obj, num_mine in tile_dict.items():
             new_list = [obj.x_cord, obj.y_cord, num_mine]
             js_tile_array.append(new_list)
-
-            
-        print(jsonify(js_tile_array))
 
         return jsonify(js_tile_array)
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>{% block title %}{% endblock %}</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
   <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
@@ -10,7 +10,8 @@
   <link href="/static/css/style.css" rel="stylesheet">
 </head>
 <body>
-  <div id="base">Test</div>
+    {% block body %}
+    {% endblock %}
   <script src="/static/js/pagejs.jsx" type="text/jsx"></script>
 </body>
 </html>

@@ -54,7 +54,7 @@ const Tiles = props => {
             const allFlags = JSON.stringify(flagIds.sort());
             
             if (allMines == allFlags) {
-                console.log("This works!")
+                console.log("You win!")
             } else {
                 console.log("allMines = ", allFlags)
                 console.log("allMines = ", allMines)
