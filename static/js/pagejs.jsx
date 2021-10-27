@@ -45,21 +45,18 @@ const Tiles = props => {
             flagIds.push(tileCords)
         }  
 
-        console.log(flagIds)
-
-        $.get('/flag_data', res => {
-            console.log(res)
+        if ((props.allMines).length < 1) {
+            props.mineSetter()
+        };
+        
+        const allFlags = JSON.stringify(flagIds.sort());
             
-            const allMines = JSON.stringify(res.sort());
-            const allFlags = JSON.stringify(flagIds.sort());
-            
-            if (allMines == allFlags) {
+            if (props.allMines == allFlags) {
                 console.log("You win!")
             } else {
-                console.log("allMines = ", allFlags)
-                console.log("allMines = ", allMines)
+                console.log("allFlags = ", allFlags)
+                console.log("allMines = ", props.allMines)
             };
-        });
     }
 
     const toggClick = cords => {
@@ -97,7 +94,7 @@ const Rows = props => {
             key={`row-${currRow[0]}`}
             id={`row-${currRow[0]}`}
             >
-            <Tiles row={currRow[0]} toggleState={props.toggleState}/>
+            <Tiles row={currRow[0]} toggleState={props.toggleState} allMines={props.allMines} mineSetter={props.mineSetter}/>
             </div>
         )
     }
@@ -125,11 +122,20 @@ const ToggleButton = props => {
 const Minesweeper = props => {
 
     const [toggleState, setToggleState] = React.useState(false);
+    const [mineTiles, setMineTiles] = React.useState([]);
+
 
     const toggler = () => {
         setToggleState(!toggleState)
         console.log(toggleState)
     };
+
+    const mineSetter = () => {
+        $.get('/all_mines', res => {
+            console.log(res)
+            setMineTiles(JSON.stringify(res.sort()))
+        });
+    }
 
     return (
         <div
@@ -140,7 +146,7 @@ const Minesweeper = props => {
             </div>
             <div
             id="container">
-                <Rows toggleState={toggleState}/>
+                <Rows toggleState={toggleState} allMines={mineTiles} mineSetter={mineSetter}/>
             </div>
         </div>
     )
