@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %} Choose an Option {% endblock %}
+
+{% block body %}
+  <div id="container">
+      {% for message in get_flashed_messages() %}
+        <li>{{ message }}</li>
+      {% endfor %}
+  </div>
+  {% endblock %}

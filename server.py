@@ -71,8 +71,10 @@ def get_tile_data():
 
         return jsonify(js_tile_array)
 
-@app.route('/flag_data')
-def get_flag_data():
+@app.route('/all_mines')
+def get_all_mines():
+
+    print("mine request to server")
 
     all_mines = []
 
@@ -82,8 +84,6 @@ def get_flag_data():
             mine.y_cord
         ]
         all_mines.append(mine_cords)
-
-    print(all_mines)
 
     return jsonify(all_mines)
 
