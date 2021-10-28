@@ -8,7 +8,7 @@
 
 .tile {
     font-family: monospace;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: bold;
     width: 32px;
     height: 32px;
@@ -21,7 +21,12 @@
     line-height: 0px;
 }
 
+.tile:disabled {
+    color: black;
+}
+
 .row {
     background-color: cornflowerblue;
     height: 32px;
 }
+

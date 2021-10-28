@@ -24,7 +24,12 @@ const Tiles = props => {
             };
             $.get('/tile_data', tileData, res => {
                 for (const tile of res) {
-                    $(`#${tile[0]}-${tile[1]}`).text(tile[2])
+                    $(`#${tile[0]}-${tile[1]}`).text(tile[2]);
+                    $(`#${tile[0]}-${tile[1]}`).prop("disabled",true);
+                    if (($(".tile:contains('M')")).length > 0) {
+                        props.winLoseSetter('lose')
+                        console.log("lose")
+                    }
                 }  
             });
     } 
@@ -52,10 +57,7 @@ const Tiles = props => {
         const allFlags = JSON.stringify(flagIds.sort());
             
             if (props.allMines == allFlags) {
-                console.log("You win!")
-            } else {
-                console.log("allFlags = ", allFlags)
-                console.log("allMines = ", props.allMines)
+                props.winLoseSetter('win')
             };
     }
 
@@ -94,7 +96,7 @@ const Rows = props => {
             key={`row-${currRow[0]}`}
             id={`row-${currRow[0]}`}
             >
-            <Tiles row={currRow[0]} toggleState={props.toggleState} allMines={props.allMines} mineSetter={props.mineSetter}/>
+            <Tiles row={currRow[0]} toggleState={props.toggleState} allMines={props.allMines} mineSetter={props.mineSetter} winLoseSetter={props.winLoseSetter}/>
             </div>
         )
     }
@@ -112,30 +114,69 @@ const ToggleButton = props => {
                 id="flagToggle"
                 onClick={() => props.toggler()}
                 >
-                Place Flag Toggle</button>
+                Current Click Mode: Uncover Tiles<br></br>
+                Click Here to Place Flags
+                </button>
     ]
 
 
     return <section id="toggSec">{theToggler}</section>
 }
 
+const WinLose = props => {
+
+    if (props.winLoseState === 'game') {
+        return null;
+    }
+
+    let winLoseMessage = 'Reset'
+    if (props.winLoseState === 'win') {
+        winLoseMessage = "Congratulations, you've won!" 
+    } else if (props.winLoseState === 'lose') {
+        winLoseMessage = "Sorry, you've lost!" 
+    };
+
+
+    return (
+        <div
+        className='winLose'
+        key='winLose'
+        id='winLose'>
+            <button
+                type='button'
+                className='resetButton' 
+                key='resetButton' 
+                id='resetButton' 
+                onClick={() => $.get('/all_mines')}>{winLoseMessage}<br/>Click here to return to the main page!</button>
+        </div>
+    )
+}
+
 const Minesweeper = props => {
 
     const [toggleState, setToggleState] = React.useState(false);
     const [mineTiles, setMineTiles] = React.useState([]);
-
+    const [winLoseState, setWinLoseState] = React.useState("game");
 
     const toggler = () => {
         setToggleState(!toggleState)
+        if (toggleState) {
+            $('#flagToggle').html("Current Click Mode: Uncover Tiles<br/>Click Here to Place Flags")
+        } else {
+            $('#flagToggle').html("Current Click Mode: Place Flag<br/>Click Here to Uncover Tiles")
+        }
         console.log(toggleState)
     };
 
     const mineSetter = () => {
         $.get('/all_mines', res => {
-            console.log(res)
             setMineTiles(JSON.stringify(res.sort()))
         });
     }
+
+    const winLoseSetter = (gamestate="game") => {
+        setWinLoseState(gamestate)
+    };
 
     return (
         <div
@@ -146,11 +187,11 @@ const Minesweeper = props => {
             </div>
             <div
             id="container">
-                <Rows toggleState={toggleState} allMines={mineTiles} mineSetter={mineSetter}/>
+                <WinLose winLoseState={winLoseState}/>
+                <Rows toggleState={toggleState} allMines={mineTiles} mineSetter={mineSetter} winLoseSetter={winLoseSetter} />
             </div>
         </div>
     )
-
 }
 
 ReactDOM.render(<Minesweeper/>, document.querySelector('#base'))
