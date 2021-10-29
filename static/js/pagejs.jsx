@@ -28,7 +28,6 @@ const Tiles = props => {
                     $(`#${tile[0]}-${tile[1]}`).prop("disabled",true);
                     if (($(".tile:contains('M')")).length > 0) {
                         props.winLoseSetter('lose')
-                        console.log("lose")
                     }
                 }  
             });
@@ -130,25 +129,31 @@ const WinLose = props => {
     }
 
     let winLoseMessage = 'Reset'
+    $.get('/win_lose', {win_state: props.winLoseState});
     if (props.winLoseState === 'win') {
         winLoseMessage = "Congratulations, you've won!" 
     } else if (props.winLoseState === 'lose') {
+
         winLoseMessage = "Sorry, you've lost!" 
     };
 
 
     return (
-        <div
+        <form
+        action='/'
         className='winLose'
         key='winLose'
-        id='winLose'>
+        id='winLose'
+        >
             <button
-                type='button'
+                type='submit'
                 className='resetButton' 
                 key='resetButton' 
                 id='resetButton' 
-                onClick={() => $.get('/all_mines')}>{winLoseMessage}<br/>Click here to return to the main page!</button>
-        </div>
+                >
+                    {winLoseMessage}<br/>Click here to return to the main page!
+            </button>
+        </form>
     )
 }
 
@@ -157,6 +162,19 @@ const Minesweeper = props => {
     const [toggleState, setToggleState] = React.useState(false);
     const [mineTiles, setMineTiles] = React.useState([]);
     const [winLoseState, setWinLoseState] = React.useState("game");
+    const [firstOpen, setFirstOpen] = React.useState(true);
+
+    if (firstOpen == true) {
+        $.get('/read_viewed_tiles', res => {
+            if (res != []) {
+                for (const tile of res) {
+                    $(`#${tile[0]}-${tile[1]}`).text(tile[2]);
+                    $(`#${tile[0]}-${tile[1]}`).prop("disabled",true);
+                    setFirstOpen(false);
+            };
+        }});
+}
+
 
     const toggler = () => {
         setToggleState(!toggleState)
@@ -165,7 +183,6 @@ const Minesweeper = props => {
         } else {
             $('#flagToggle').html("Current Click Mode: Place Flag<br/>Click Here to Uncover Tiles")
         }
-        console.log(toggleState)
     };
 
     const mineSetter = () => {

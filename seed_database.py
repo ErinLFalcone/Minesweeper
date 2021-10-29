@@ -18,6 +18,6 @@ x_cord = 0
 while x_cord <= 29:
     y_cord = 0
     while y_cord <= 19:
-        crud.create_tile(x_cord, y_cord)
+        crud.create_tile(x_cord, y_cord, "Test")
         y_cord +=1
     x_cord +=1

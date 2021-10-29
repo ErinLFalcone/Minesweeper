@@ -12,13 +12,15 @@ class User(db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_email = db.Column(db.String(100), nullable=False, unique=True)
-    user_name = db.Column(db.String(16), nullable=False, unique=True)
+    username = db.Column(db.String(16), nullable=False, unique=True)
     password = db.Column(db.String(32), nullable=False)
+    win_count = db.Column(db.Integer, nullable=False)
+    in_game = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return f"""<User user_id={self.user_id}, 
         user_email=({self.user_email}), 
-        user_name={self.user_name}>"""
+        username={self.username}>"""
 
 class Tile(db.Model):
     '''Class for each map tile, with x-coordinate, y-coordinate, map ID, tile contents, and muability'''
@@ -27,8 +29,10 @@ class Tile(db.Model):
     tile_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     x_cord = db.Column(db.Integer, nullable=False)
     y_cord = db.Column(db.Integer, nullable=False)
+    username = db.Column(db.String(16), db.ForeignKey("users.username"))
     is_mine = db.Column(db.Boolean, nullable=False)
     mine_count = db.Column(db.Integer, nullable=True)
+    is_viewed = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return (

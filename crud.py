@@ -1,12 +1,14 @@
 from model import db, User, Tile, connect_to_db
 import random as r
 
-def create_user(user_email, user_name, password):
+def create_user(user_email, username, password, win_count=0, in_game=False):
     """Create and return a new user."""
 
     new_user = User(user_email=user_email,
-        user_name=user_name,
-        password=password
+        username=username,
+        password=password,
+        win_count=win_count,
+        in_game=in_game
         )
 
     db.session.add(new_user)
@@ -14,14 +16,16 @@ def create_user(user_email, user_name, password):
 
     return new_user
 
-def create_tile(x_cord, y_cord, is_mine=False, mine_count=0):
+def create_tile(x_cord, y_cord, username, is_mine=False, mine_count=0, is_viewed=False):
     """Create and return a new tile."""
 
     new_tile = Tile(
         x_cord=x_cord,
         y_cord=y_cord,
+        username=username,
         is_mine=is_mine,
-        mine_count=mine_count  
+        mine_count=mine_count,
+        is_viewed=is_viewed
         )
 
     db.session.add(new_tile)
@@ -29,7 +33,7 @@ def create_tile(x_cord, y_cord, is_mine=False, mine_count=0):
 
     return new_tile
 
-def adj_mine_setter(num_tile, mine_list):
+def adj_mine_setter(num_tile, mine_list, username):
     """Called in fill_new_game(). Takes in the total number of tiles and the list of mine tiles, 
     computes the number of mine tiles adjacent to all non-mine tiles
     and updates the tile database with this information."""
@@ -42,7 +46,10 @@ def adj_mine_setter(num_tile, mine_list):
     for i in range(1,num_tile+1):
         if i not in mine_list:
             tile_mine_count = 0
-            not_mine = Tile.query.filter_by(tile_id=i).first()
+            not_mine = Tile.query.filter_by(
+                tile_id = i,
+                username = username
+                ).first()
             nm_x = not_mine.x_cord
             nm_y = not_mine.y_cord
 
@@ -51,7 +58,8 @@ def adj_mine_setter(num_tile, mine_list):
                 check_y_cord = nm_y-1
                 while check_y_cord <= nm_y+1:
                     check_tile = Tile.query.filter_by(
-                        x_cord=check_x_cord, y_cord=check_y_cord
+                        x_cord=check_x_cord, y_cord=check_y_cord,
+                        username=username
                         ).first()
                     try:
                         if check_tile.is_mine == True:
@@ -66,7 +74,7 @@ def adj_mine_setter(num_tile, mine_list):
             db.session.commit()
 
 
-def adj_z_mine_add(tile_obj_dict, z_mine_obj):
+def adj_z_mine_add(tile_obj_dict, z_mine_obj, username):
     """Called in fill_z_tile_dict. Takes in a dictionary of non-mine Tile objects
     and a single Tile object that has zero adjacent mines.
     Checks all tiles adjacent to the zero adjacent mine Tile object,
@@ -86,7 +94,8 @@ def adj_z_mine_add(tile_obj_dict, z_mine_obj):
         adj_y_cord = zm_y-1
         while adj_y_cord <= zm_y+1:
             adj_tile = Tile.query.filter_by(
-                x_cord=adj_x_cord, y_cord=adj_y_cord
+                x_cord=adj_x_cord, y_cord=adj_y_cord,
+                username=username
                 ).first()
             if (
                 adj_tile not in tile_obj_dict
@@ -94,12 +103,14 @@ def adj_z_mine_add(tile_obj_dict, z_mine_obj):
                     adj_tile is not None
                     ):
                 update_dict[adj_tile] = adj_tile.mine_count
+                setattr(adj_tile, 'is_viewed', True)
+                db.session.commit()
             adj_y_cord +=1
         adj_x_cord +=1
    
     return update_dict
 
-def fill_z_tile_dict(z_mine_obj):
+def fill_z_tile_dict(z_mine_obj, username):
     """Called when a tile with zero adjacent mines is clicked on in game.
     Takes in the zero adjacent mine Tile object
     and fills in a dictionary of all connecting zero mine tiles,
@@ -111,13 +122,16 @@ def fill_z_tile_dict(z_mine_obj):
     update_dict = {}
     checked_set = set([])
 
+    setattr(z_mine_obj, 'is_viewed', True)
+    db.session.commit()
+
     while True:
         update_dict.update(tile_obj_dict)
         for tile in tile_obj_dict:
             if (tile_obj_dict[tile] == 0) and (tile not in checked_set):
                 checked_set.add(tile)
                 update_dict.update(
-                    adj_z_mine_add(update_dict, tile)
+                    adj_z_mine_add(update_dict, tile, username)
                     )
 
         if len(tile_obj_dict) == len(update_dict):
@@ -128,7 +142,7 @@ def fill_z_tile_dict(z_mine_obj):
 
     return tile_obj_dict
 
-def fill_new_game(num_mine=60):
+def fill_new_game(username, num_mine=60):
     """Takes in desired number of mine tiles (defaulting to 60)
     and refreshes the mines and adjacent mine numbers in the database.
     """
@@ -141,36 +155,49 @@ def fill_new_game(num_mine=60):
     mine_list = r.sample(range(1,num_tile), num_mine)
 
     # remove old mines
-    curr_mines = Tile.query.filter_by(is_mine=True).all()
+    curr_mines = Tile.query.filter_by(is_mine=True, username=username).all()
     for mine in curr_mines:
         setattr(mine, 'is_mine', False)
         db.session.commit()
 
+    # remove viewed tiles
+    viewed_tiles = Tile.query.filter_by(is_viewed=True, username=username).all()
+    for viewed in viewed_tiles:
+        setattr(viewed, 'is_viewed', False)
+        db.session.commit()
+
     for mine in mine_list:
-        mine_tile = Tile.query.filter_by(tile_id=mine).first()
+        mine_tile = Tile.query.filter_by(
+            tile_id = mine,
+            username = username
+            ).first()
         setattr(mine_tile, 'is_mine', True)
         db.session.commit()
 
-    adj_mine_setter(num_tile, mine_list)
+    adj_mine_setter(num_tile, mine_list, username)
 
 def read_user(username):
     """Takes in a username, queries the database,
     and returns the User object"""
 
     user = User.query.filter(
-        User.user_name == username
+        User.username == username
         ).first()
 
     return user
 
-def read_tile(tile_x, tile_y):
+def read_tile(tile_x, tile_y, username):
     """Takes in an x,y coordinate and
     returns the Tile object for that coordinate"""
    
-    tile = Tile.query.filter(
-        Tile.x_cord == tile_x,
-        Tile.y_cord == tile_y
+    tile = Tile.query.filter_by(
+        x_cord = tile_x,
+        y_cord = tile_y,
+        username = username
         ).first()
+
+    setattr(tile, 'is_viewed', True)
+    db.session.commit()
 
     return tile
 
@@ -178,6 +205,51 @@ def read_all_mines():
     """Queries the database for all mine tiles,
     returns that data as a list of Tile objects"""
 
-    all_mines = Tile.query.filter(Tile.is_mine == True).all()
+    all_mines = Tile.query.filter_by(is_mine = True).all()
 
     return all_mines
+
+def read_viewed_tiles(username):
+    """Takes in a username,
+    returns list of tiles in active game where is_viewed=True"""
+
+    tile_objs = Tile.query.filter_by(
+                username=username, is_viewed=True
+                ).all()
+
+    viewed_list = []
+         
+    for obj in tile_objs:
+        new_list = [obj.x_cord, obj.y_cord, obj.mine_count]
+        viewed_list.append(new_list)
+
+    return viewed_list
+
+
+def increment_wins(username):
+    """Increment win count for a given uyser by 1"""
+
+    user = User.query.filter(
+        User.username == username
+        ).first()
+
+    new_wins = user.win_count +1
+
+    setattr(user, 'win_count', new_wins)
+    db.session.commit()
+    print(user.win_count)
+
+    return user.win_count
+
+def toggle_in_game(username):
+    """Toggles game state between T/F for given user."""
+
+    user = User.query.filter(
+        User.username == username
+        ).first()
+
+    new_status = not user.in_game
+    print(new_status)
+
+    setattr(user, 'in_game', new_status)
+    db.session.commit()

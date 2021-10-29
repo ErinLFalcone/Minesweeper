@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %} Choose an Option {% endblock %}
+{% block title %} Start a New Game {% endblock %}
 
 {% block body %}
   <div id="container">
-      {% for message in get_flashed_messages() %}
-        <li>{{ message }}</li>
-      {% endfor %}
+    <h2>Hello!</h2>
+    <form
+    action="/minesweeper">
+      <button
+      type="submit"
+      >Click here to start a new game</button>
+    </form>
   </div>
   {% endblock %}
