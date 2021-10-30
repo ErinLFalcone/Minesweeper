@@ -16,7 +16,7 @@ def create_user(user_email, username, password, win_count=0, in_game=False):
 
     return new_user
 
-def create_tile(x_cord, y_cord, username, is_mine=False, mine_count=0, is_viewed=False):
+def create_tile(x_cord, y_cord, username, is_mine=False, mine_count=0, is_viewed=False, is_flag=False):
     """Create and return a new tile."""
 
     new_tile = Tile(
@@ -25,7 +25,8 @@ def create_tile(x_cord, y_cord, username, is_mine=False, mine_count=0, is_viewed
         username=username,
         is_mine=is_mine,
         mine_count=mine_count,
-        is_viewed=is_viewed
+        is_viewed=is_viewed,
+        is_flag=is_flag
         )
 
     db.session.add(new_tile)
@@ -197,6 +198,7 @@ def read_tile(tile_x, tile_y, username):
         ).first()
 
     setattr(tile, 'is_viewed', True)
+    setattr(tile, 'is_flagged', False)
     db.session.commit()
 
     return tile
@@ -214,13 +216,16 @@ def read_viewed_tiles(username):
     returns list of tiles in active game where is_viewed=True"""
 
     tile_objs = Tile.query.filter_by(
-                username=username, is_viewed=True
+                username=username, is_viewed=True, is_mine=False
                 ).all()
 
     viewed_list = []
          
     for obj in tile_objs:
-        new_list = [obj.x_cord, obj.y_cord, obj.mine_count]
+        if obj.is_flag:
+            new_list = [obj.x_cord, obj.y_cord, "🚩"]
+        else:
+            new_list = [obj.x_cord, obj.y_cord, obj.mine_count]
         viewed_list.append(new_list)
 
     return viewed_list
@@ -241,15 +246,28 @@ def increment_wins(username):
 
     return user.win_count
 
-def toggle_in_game(username):
-    """Toggles game state between T/F for given user."""
+def set_in_game(username):
+    """Sets game state to True for given user."""
 
     user = User.query.filter(
         User.username == username
         ).first()
 
-    new_status = not user.in_game
-    print(new_status)
+    setattr(user, 'in_game', True)
+    db.session.commit()
 
-    setattr(user, 'in_game', new_status)
+def set_not_in_game(username):
+    """Sets game state to False for given user."""
+
+    user = User.query.filter(
+        User.username == username
+        ).first()
+
+    setattr(user, 'in_game', False)
+    db.session.commit()
+
+def flag_tile(tile):
+    """Sets the is_flag column to true for given tile."""
+
+    setattr(tile, 'is_flag', True)
     db.session.commit()

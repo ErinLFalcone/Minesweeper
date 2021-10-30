@@ -20,23 +20,33 @@ const Tiles = props => {
     const getTile  = cords => {
             const tileData = {
                 tile_x: cords[0],
-                tile_y: cords[1]
+                tile_y: cords[1],
+                flag: "False"
             };
             $.get('/tile_data', tileData, res => {
                 for (const tile of res) {
                     $(`#${tile[0]}-${tile[1]}`).text(tile[2]);
                     $(`#${tile[0]}-${tile[1]}`).prop("disabled",true);
-                    if (($(".tile:contains('M')")).length > 0) {
-                        props.winLoseSetter('lose')
-                    }
-                }  
-            });
+                    
+                }
+                if ($(".tile:contains('💥')").length > 0) {
+                    props.winLoseSetter('lose')
+                }
+            })
+            ;
     } 
 
     const getFlag = cords => {
-        $(`#${cords[0]}-${cords[1]}`).text("F");
+        const tileData = {
+            tile_x: cords[0],
+            tile_y: cords[1],
+            flag: "True"
+        };
+        $.get('/tile_data', tileData);
         
-        const flagTiles = $(".tile:contains('F')");
+        $(`#${cords[0]}-${cords[1]}`).text("🚩");
+        
+        const flagTiles = $(".tile:contains('🚩')");
         
         const flagIds = []
 
@@ -133,7 +143,6 @@ const WinLose = props => {
     if (props.winLoseState === 'win') {
         winLoseMessage = "Congratulations, you've won!" 
     } else if (props.winLoseState === 'lose') {
-
         winLoseMessage = "Sorry, you've lost!" 
     };
 

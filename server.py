@@ -16,7 +16,8 @@ def show_index():
         if session['logged'] == True:
             if crud.read_user(session['username']).in_game:
                 return render_template('game.html')
-            return render_template('int.html')
+            win_count = crud.read_user(session['username']).win_count
+            return render_template('int.html', win_count=win_count)
     except KeyError:
             return render_template('login.html')
 
@@ -46,7 +47,7 @@ def login():
 def minesweeper():
     try:
         if session['logged'] == True:
-            crud.toggle_in_game(session['username'])
+            crud.set_in_game(session['username'])
             crud.fill_new_game(session['username'])
             return render_template('game.html')
     except KeyError:
@@ -60,7 +61,7 @@ def win_lose():
     if win_state == 'win':
         crud.increment_wins(session['username'])
 
-    crud.toggle_in_game(session['username'])
+    crud.set_not_in_game(session['username'])
 
     return "OK"
 
@@ -75,14 +76,23 @@ def get_tile_data():
  
     tile_x = int(request.args.get("tile_x"))
     tile_y = int(request.args.get("tile_y"))
+    flag = request.args.get("flag")
+
+    if flag == "True":
+        flag = True
+    elif flag == "False":
+        flag = False
+
+    if flag:
+        tile_to_flag = crud.read_tile(tile_x, tile_y, session['username'])
+        crud.flag_tile(tile_to_flag)
+        return "OK"
 
     tile = crud.read_tile(tile_x, tile_y, session['username'])
    
     if tile.is_mine:
        
-        flash('''Sorry, you lose!\n
-            Please try again.''')
-        return jsonify([[tile.x_cord, tile.y_cord, 'M']])
+        return jsonify([[tile.x_cord, tile.y_cord, '💥']])
 
     elif tile.mine_count > 0:
         return jsonify([[tile.x_cord, tile.y_cord, tile.mine_count]])

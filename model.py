@@ -33,6 +33,7 @@ class Tile(db.Model):
     is_mine = db.Column(db.Boolean, nullable=False)
     mine_count = db.Column(db.Integer, nullable=True)
     is_viewed = db.Column(db.Boolean, nullable=False)
+    is_flag = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return (
