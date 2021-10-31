@@ -178,7 +178,9 @@ const Minesweeper = props => {
             if (res != []) {
                 for (const tile of res) {
                     $(`#${tile[0]}-${tile[1]}`).text(tile[2]);
-                    $(`#${tile[0]}-${tile[1]}`).prop("disabled",true);
+                    if (tile[2] != "🚩") {
+                        $(`#${tile[0]}-${tile[1]}`).prop("disabled",true)
+                    };
                     setFirstOpen(false);
             };
         }});

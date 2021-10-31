@@ -231,10 +231,14 @@ def read_viewed_tiles(username):
                 username=username, is_viewed=True, is_mine=False
                 ).all()
 
+    tile_objs.extend(Tile.query.filter_by(
+                username=username, is_flag=True
+                ).all())
+
     viewed_list = []
          
     for obj in tile_objs:
-        if obj.is_flag:
+        if obj.is_flag is True:
             new_list = [obj.x_cord, obj.y_cord, "🚩"]
         else:
             new_list = [obj.x_cord, obj.y_cord, obj.mine_count]
