@@ -1,11 +1,10 @@
 from model import db, User, Tile, connect_to_db
 import random as r
 
-def create_user(user_email, username, password, win_count=0, in_game=False):
+def create_user(username, password, win_count=0, in_game=False):
     """Create and return a new user."""
 
-    new_user = User(user_email=user_email,
-        username=username,
+    new_user = User(username=username,
         password=password,
         win_count=win_count,
         in_game=in_game
@@ -34,8 +33,8 @@ def create_tile(x_cord, y_cord, username, is_mine=False, mine_count=0, is_viewed
 
     return new_tile
 
-def adj_mine_setter(num_tile, mine_list, username):
-    """Called in fill_new_game(). Takes in the total number of tiles and the list of mine tiles, 
+def adj_mine_setter(first_tile, last_tile, mine_list, username):
+    """Called in fill_new_game(). Takes in the first and last tiles and the list of mine tiles,
     computes the number of mine tiles adjacent to all non-mine tiles
     and updates the tile database with this information."""
 
@@ -44,7 +43,7 @@ def adj_mine_setter(num_tile, mine_list, username):
     # checks all tiles with an x,y cord from (x-1),(y-1) to (x+1),(y+1)
     # (which is the 3x3 grid surrounding the tile)
     # for mines, and adds up that number. 
-    for i in range(1,num_tile+1):
+    for i in range(first_tile.tile_id,last_tile.tile_id):
         if i not in mine_list:
             tile_mine_count = 0
             not_mine = Tile.query.filter_by(
@@ -148,12 +147,25 @@ def fill_new_game(username, num_mine=60):
     and refreshes the mines and adjacent mine numbers in the database.
     """
 
+    # Deletes old game tiles
+    Tile.query.filter_by(username=username).delete()
+    db.session.commit()
 
-    last_tile = Tile.query.order_by(Tile.tile_id.desc()).first()
+    x_cord = 0
 
-    num_tile = last_tile.tile_id
+    while x_cord <= 29:
+        y_cord = 0
+        while y_cord <= 19:
+            create_tile(x_cord, y_cord, username)
+            y_cord +=1
+        x_cord +=1
 
-    mine_list = r.sample(range(1,num_tile), num_mine)
+
+    first_tile = Tile.query.filter_by(username=username).order_by(Tile.tile_id).first()
+
+    last_tile = Tile.query.filter_by(username=username).order_by(Tile.tile_id.desc()).first()
+    
+    mine_list = r.sample(range(first_tile.tile_id,last_tile.tile_id), num_mine)
 
     # remove old mines
     curr_mines = Tile.query.filter_by(is_mine=True, username=username).all()
@@ -175,7 +187,7 @@ def fill_new_game(username, num_mine=60):
         setattr(mine_tile, 'is_mine', True)
         db.session.commit()
 
-    adj_mine_setter(num_tile, mine_list, username)
+    adj_mine_setter(first_tile, last_tile, mine_list, username)
 
 def read_user(username):
     """Takes in a username, queries the database,

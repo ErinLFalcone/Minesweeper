@@ -43,6 +43,31 @@ def login():
         Please try again''')
         return redirect('/')
 
+@app.route('/create_account')
+def create_account():
+    try:
+        if session['logged'] is True:
+            redirect('/')
+    except KeyError:
+        return render_template('create_account.html')
+
+@app.route('/try_account', methods=["POST"])
+def try_account():
+
+    username = request.form.get("new_username")
+    password = request.form.get("new_password")
+
+    if crud.read_user(username) is None:
+        crud.create_user(username, password)
+        print(crud.read_user(username))
+        session['logged'] = True
+        session['username'] = username
+        return redirect('/')
+    else:
+        flash('''Sorry, that username is taken.\n
+            Please try again''')
+        return redirect('/create_account')
+
 @app.route('/minesweeper')
 def minesweeper():
     try:

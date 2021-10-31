@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} Create Your Account {% endblock %}
+
+{% block body %}
+  <div id="container">
+    <div className="create_account">
+        <form action="/try_account" method="POST">
+            <h2>Enter a new username</h2>
+            <input type="text" name="new_username">
+            <h2>Enter a password</h2>
+            <input type="password" name="new_password"> 
+            <input type="submit">
+        </form>
+    </div>
+      {% for message in get_flashed_messages() %}
+        <li>{{ message }}</li>
+      {% endfor %}
+  </div>
+  {% endblock %}

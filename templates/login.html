@@ -16,5 +16,14 @@
       {% for message in get_flashed_messages() %}
         <li>{{ message }}</li>
       {% endfor %}
+
+    <div className="newButton">
+      <form action="/create_account">
+        <button
+        type='submit'>
+        Click here to create a new account  
+        </button>
+      </form>
+    </div>
   </div>
   {% endblock %}

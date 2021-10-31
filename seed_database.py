@@ -11,7 +11,7 @@ os.system('createdb fgproject')
 model.connect_to_db(server.app)
 model.db.create_all()
 
-crud.create_user('test@test.test', 'Test', '7357')
+crud.create_user('Test', '7357')
 
 x_cord = 0
 

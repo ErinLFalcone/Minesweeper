@@ -11,7 +11,6 @@ class User(db.Model):
     __tablename__ = 'users'
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_email = db.Column(db.String(100), nullable=False, unique=True)
     username = db.Column(db.String(16), nullable=False, unique=True)
     password = db.Column(db.String(32), nullable=False)
     win_count = db.Column(db.Integer, nullable=False)
@@ -19,7 +18,6 @@ class User(db.Model):
 
     def __repr__(self):
         return f"""<User user_id={self.user_id}, 
-        user_email=({self.user_email}), 
         username={self.username}>"""
 
 class Tile(db.Model):
