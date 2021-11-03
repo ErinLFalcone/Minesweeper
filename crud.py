@@ -215,11 +215,11 @@ def read_tile(tile_x, tile_y, username):
 
     return tile
 
-def read_all_mines():
+def read_all_mines(username):
     """Queries the database for all mine tiles,
     returns that data as a list of Tile objects"""
 
-    all_mines = Tile.query.filter_by(is_mine = True).all()
+    all_mines = Tile.query.filter_by(username=username, is_mine = True).all()
 
     return all_mines
 

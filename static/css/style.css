@@ -1,13 +1,87 @@
+/*  #2c1130 bg dk purple
+    #2d2556 dk indigo
+    #0054b7 mid blue
+    #7f47c6 mid purple
+    #68f9e8 light cyan
+    #00b87b mid green
+ */
+
+html {
+    background-color: #2c1130;
+    font-family: 'Gentium Basic', serif;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: 'Gentium Basic', serif;
+    color: #68f9e8;
+    text-shadow: 1px 1px 5px #2e2456, -1px -1px 5px #2e2456,
+    1px 1px 1px #04b57b, -1px -1px 1px #04b57b,
+    1px 1px 3px #0054b6, -1px -1px 3px #0054b6;
+}
+
+input {
+    background-color: #0054b7;
+    box-shadow: 1 1 3px radial-gradient(#7f47c6, #2d2556);
+    border-color: #7f47c6;
+    border-radius: 25px 5px;
+    outline: none;
+}
+
 #container {
     width: 960px;
     height: 640px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 100px;
+    margin-top: 10px;
+}
+
+#newButton {
+    background-color: #7f47c6;
+    font-family: 'Gentium Basic', serif;
+}
+
+#toggleDiv {
+    width: 960px;
+    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+}
+
+.flagToggle {
+    display: inline-block;
+    position: relative;
+    left: 300px;
+    width: 340px;
+    background-color: #7f47c6;
+    font-size: 14pt;
+    font-family: 'Gentium Basic', serif;
+    color: #68f9e8;
+    text-shadow: -1px 0 #2c1130, 0 1px #2c1130,
+    1px 0 #2c1130, 0 -1px #2c1130;
+    border-color: #00b87b;
+    border-radius: 15px 15px 45px 45px;
+}
+
+.resetButton {
+    display: inline-block;
+    position: absolute;
+    top: 33%;
+    left: 33%;
+    width: 580px;
+    background-color: #7f47c6;
+    font-size: 18pt;
+    font-family: 'Gentium Basic', serif;
+    color: #68f9e8;
+    text-shadow: -1px 0 #2c1130, 0 1px #2c1130,
+    1px 0 #2c1130, 0 -1px #2c1130;
+    border-color: #00b87b;
+    border-radius: 45px 45px 15px 15px;
+    z-index: 10;
+
 }
 
 .tile {
-    font-family: monospace;
     font-size: 16px;
     font-weight: bold;
     width: 32px;
@@ -16,17 +90,19 @@
     display: inline-block;
     border-width: 2px;
     border-radius: 2px;
-    border-color: black;
+    border-color: #2d2556;
     text-align: center;
     line-height: 0px;
 }
 
 .tile:disabled {
-    color: black;
+    color: #68f9e8;
+    text-shadow: -2px 0 #2c1130, 0 2px #2c1130,
+    2px 0 #2c1130, 0 -2px #2c1130;
 }
 
 .row {
-    background-color: cornflowerblue;
+    background-color: #0054b7;
     height: 32px;
 }
 

@@ -65,6 +65,9 @@ const Tiles = props => {
         
         const allFlags = JSON.stringify(flagIds.sort());
             
+        console.log(allFlags)
+        console.log(props.allMines)
+
             if (props.allMines == allFlags) {
                 props.winLoseSetter('win')
             };

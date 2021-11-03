@@ -140,7 +140,7 @@ def get_all_mines():
 
     all_mines = []
 
-    for mine in crud.read_all_mines():
+    for mine in crud.read_all_mines(session['username']):
         mine_cords = [
             mine.x_cord,
             mine.y_cord
