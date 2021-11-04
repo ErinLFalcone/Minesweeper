@@ -76,7 +76,7 @@ def minesweeper():
             crud.fill_new_game(session['username'])
             return render_template('game.html')
     except KeyError:
-            return render_template('login.html')
+        return render_template('login.html')
 
 @app.route('/win_lose')
 def win_lose():

@@ -217,7 +217,7 @@ const Minesweeper = props => {
                 <ToggleButton toggleState={toggleState} toggler={toggler}/>
             </div>
             <div
-            id="container">
+            id="jsMap">
                 <WinLose winLoseState={winLoseState}/>
                 <Rows toggleState={toggleState} allMines={mineTiles} mineSetter={mineSetter} winLoseSetter={winLoseSetter} />
             </div>
